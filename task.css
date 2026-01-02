@@ -1,43 +1,40 @@
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: system-ui, sans-serif;
+  font-family: sans-serif;
 }
 
 body {
   background: #f6f7f8;
-  overflow-x: hidden;
+
+}
+
+.container {
+  display: flex;
 }
 
 /* Sidebar */
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 260px;
+  width: 20%;
   height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
   background: #ffffff;
   padding: 20px 16px;
   border-right: 1px solid #eef1f4;
-  transition: transform 0.3s ease;
+
   z-index: 1000;
   overflow-y: auto;
 }
 
 /* Closed state (used only on mobile) */
-.sidebar.closed {
-  transform: translateX(-100%);
-}
 
 /* Overlay */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.3);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -103,10 +100,21 @@ body {
   border-radius: 50%;
 }
 
-.dot.work { background: #22c55e; }
-.dot.personal { background: #a855f7; }
-.dot.shopping { background: #f97316; }
-.dot.wishlist { background: #ec4899; }
+.dot.work {
+  background: #22c55e;
+}
+
+.dot.personal {
+  background: #a855f7;
+}
+
+.dot.shopping {
+  background: #f97316;
+}
+
+.dot.wishlist {
+  background: #ec4899;
+}
 
 /* New list button */
 .new-list {
@@ -120,46 +128,66 @@ body {
   cursor: pointer;
   bottom: 16px;
 }
+
 /*main content*/
 .main {
-  margin-left: 260px;
-  transition: margin-left 0.3s ease;
-}
-
-.main.full {
-  margin-left: 0;
+  flex: 1;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /*top bar*/
 .top-bar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px 24px;
+    background-color: white;
+    width: 100%;
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgb(237, 237, 237);
+    position: sticky;
+    top: 0;
 }
+/* ICONS */
+.icons {
+  display: flex;
+  gap: 20px;
+  font-size: 18px;
+  padding: 0 15px;
+  ;
+}
+.dashboard-link {
+  color:rgb(152, 141, 141);
+  font-weight: 400;
+  text-decoration: none;
+}
+
 
 /* Menu (hamburger) icon */
 .menu-toggle {
   font-size: 22px;
-  color: #137fec;
   cursor: pointer;
-  display: none; /* hidden on desktop */
+  display: none;
+  /* hidden on desktop */
 }
 
 /*create task*/
 .create-task {
-  padding: 40px;
   display: flex;
+  width: 80%;
+  margin: 30px auto;
   justify-content: center;
+  
+
 }
 
 .create-card {
-  width: 520px;
-  max-width: 100%;
+  width: 90%;
+  padding: 20px;
   background: #ffffff;
   border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  
 }
 
 /* Header */
@@ -167,6 +195,9 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
+  padding-bottom: 16px;        
+  margin-bottom: 20px; 
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .head-text h2 {
@@ -193,10 +224,13 @@ body {
 }
 
 /*form*/
+
+
 .form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 16px;
+  width: 100%;
 }
 
 .form-group label {
@@ -220,10 +254,6 @@ body {
   font-size: 14px;
 }
 
-textarea {
-  height: 90px;
-}
-
 /* Rows */
 .form-row {
   display: flex;
@@ -237,18 +267,26 @@ textarea {
 }
 
 .form-row.date-time-row .form-group {
-  flex: 0 0 240px;
+  display: flex;
+  width: 50%;
 }
 
 /* Project & Priority */
+
 .form-row.project-priority-row {
   display: flex;
   justify-content: center;
   gap: 16px;
+  padding-bottom: 16px;           /* space before the line */
+  margin-bottom: 20px;            /* space after the line */
+  border-bottom: 1px solid #e5e7eb; /* divider line */
 }
 
 .form-row.project-priority-row .form-group {
-  flex: 0 0 240px;
+  display: flex;
+  justify-content: center;
+
+  width: 50%;
 }
 
 
@@ -256,21 +294,25 @@ textarea {
 .priority {
   display: flex;
   gap: 8px;
+  width: 100%;
+  
 }
 
 .priority button {
-  height: 40px;
-  padding: 0 14px;
+  padding: 12px 14px;
   border-radius: 8px;
+  margin-top: 5px;
   border: 1px solid #e5e7eb;
   background: #ffffff;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 15px;
   cursor: pointer;
   pointer-events: auto;
-  position:relative;
-  z-index: 1;
+  position: relative;
+  flex: 1;
+  
 }
 
 .priority button.active {
@@ -286,9 +328,17 @@ textarea {
   border-radius: 50%;
 }
 
-.low-dot { background: #16a34a; }
-.med-dot { background: #f97316; }
-.high-dot { background: #dc2626; }
+.low-dot {
+  background: #16a34a;
+}
+
+.med-dot {
+  background: #f97316;
+}
+
+.high-dot {
+  background: #dc2626;
+}
 
 /* Footer */
 .footer {
@@ -313,10 +363,11 @@ textarea {
   border-radius: 8px;
   cursor: pointer;
 }
+
 /* media queries */
 @media (max-width: 768px) {
 
-  /* Show hamburger icon */
+  /* Show hamburger */
   .menu-toggle {
     display: block;
     font-size: 22px;
@@ -326,41 +377,43 @@ textarea {
 
   /* Sidebar hidden by default */
   .sidebar {
-    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 260px;
+    height: 100vh;
+    background: #ffffff;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    display: flex; /* ✅ KEEP FLEX */
   }
 
-  /* Sidebar opens when JS adds .open */
+  /* Sidebar opens */
   .sidebar.open {
     transform: translateX(0);
   }
 
-  /* Overlay hidden by default */
+  /* Overlay */
   .overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  opacity: 0;
-  pointer-events: none;   /*  allow clicks */
-  z-index: 5;             /* LOWER than content */
-  transition: opacity 0.3s ease;
-}
+    opacity: 0;
+    pointer-events: none;
+  }
 
-.overlay.show {
-  opacity: 1;
-  pointer-events: auto;   /* block clicks ONLY when sidebar open */
-}
+  .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-
-  /* Main content full width */
+  /* Main full width */
   .main {
-    margin-left: 0;
     width: 100%;
   }
 
   /* Create task spacing */
   .create-task {
-    padding: 20px;
+    width: 100%;
+    padding: 16px;
   }
 
   /* Stack form rows */
@@ -368,17 +421,12 @@ textarea {
     flex-direction: column;
   }
 
-  .form-row.date-time-row,
-  .form-row.project-priority-row {
-    align-items: stretch;
-  }
-
   .form-row.date-time-row .form-group,
   .form-row.project-priority-row .form-group {
-    flex: 1;
+    width: 100%;
   }
 
-  /* Priority buttons wrap */
+  /* Priority buttons */
   .priority {
     flex-wrap: wrap;
   }
@@ -388,7 +436,7 @@ textarea {
     justify-content: center;
   }
 
-  /* Footer buttons stack */
+  /* Footer buttons */
   .footer {
     flex-direction: column;
   }
@@ -397,7 +445,6 @@ textarea {
     width: 100%;
   }
 
-  /* Prevent horizontal scroll */
   body {
     overflow-x: hidden;
   }

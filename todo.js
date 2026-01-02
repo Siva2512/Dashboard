@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   /*today tasks*/
   const todayTasks = [
     {
@@ -129,13 +128,27 @@ document.addEventListener("DOMContentLoaded", () => {
       const date = taskForm.querySelector('input[type="date"]').value;
       const time = taskForm.querySelector('input[type="time"]').value;
       const project = taskForm.querySelector("select").value;
+    
+      // task.push(task);
+      localStorage.setItem("task",JSON.stringify(
+        {
+          title,
+          date,
+          time,
+          project,
+          priority: selectedPriority
+        }
+      ));
+        const task=JSON.parse(localStorage.getItem("task")) || []
+        console.log(task);
+      
 
-      console.log("TASK CREATED");
-      console.log("Title:", title);
-      console.log("Date:", date);
-      console.log("Time:", time);
-      console.log("Project:", project);
-      console.log("Priority:", selectedPriority);
+      // console.log("TASK CREATED");
+      // console.log("Title:", title);
+      // console.log("Date:", date);
+      // console.log("Time:", time);
+      // console.log("Project:", project);
+      // console.log("Priority:", selectedPriority);
 
       alert("Task created successfully ");
 
@@ -172,3 +185,12 @@ document.addEventListener("DOMContentLoaded", () => {
   renderUpcomingTasks();
 
 });
+
+ const addTaskBtn = document.querySelector(".add-task");
+
+if (addTaskBtn) {
+  addTaskBtn.addEventListener("click", () => {
+    window.location.href = "create.html";
+  });
+}
+
