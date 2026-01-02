@@ -1,4 +1,4 @@
-/*today tasks*/
+/* today tasks */
 const todayTasks = [
   {
     title: "Review Q3 Financial Reports",
@@ -46,7 +46,7 @@ function renderTodayTasks() {
     .join("");
 }
 
-/*upcoming tasks*/
+/* upcoming tasks */
 const upcomingData = [
   {
     heading: "TOMORROW",
@@ -84,7 +84,7 @@ const upcomingData = [
   }
 ];
 
-function renderUpcoming() {
+function renderUpcomingTasks() {
   const container = document.getElementById("upcomingTasks");
   if (!container) return;
 
@@ -93,7 +93,6 @@ function renderUpcoming() {
       section => `
       <div class="up-card">
         <h4>${section.heading}</h4>
-
         ${section.items
           .map(
             item => `
@@ -115,11 +114,7 @@ function renderUpcoming() {
     .join("");
 }
 
-/* RENDER DATA */
-renderTodayTasks();
-renderUpcoming();
-
-/*sidebar*/
+/* sidebar */
 const menuBtn = document.querySelector(".menu-toggle");
 const sidebar = document.querySelector(".sidebar");
 const overlay = document.querySelector(".overlay");
@@ -135,21 +130,35 @@ if (menuBtn && sidebar && overlay) {
     overlay.classList.remove("show");
   });
 }
-const d = new Date();
-document.getElementById("date").innerText =
-    d.toDateString();
 
-const menuIcon = document.getElementById("menu-bar");
-const aside = document.querySelector(".aside");
-const closeIcon = document.querySelector(".close-icon");
+/* create task*/
+const taskForm = document.querySelector(".task-form");
 
+if (taskForm) {
+  taskForm.addEventListener("submit", function (e) {
+    e.preventDefault(); // STOP PAGE REFRESH
 
-menuIcon.addEventListener("click", () => {
-    aside.style.display = "block";
+    // Temporary success check
+    alert("Create Task clicked successfully ");
 
+  });
+}
+
+/*initial render*/
+renderTodayTasks();
+renderUpcomingTasks();
+
+/*priority toggle*/
+
+const priorityButtons = document.querySelectorAll(".priority button");
+
+priorityButtons.forEach(button => {
+  button.addEventListener("click", () => {
+
+    priorityButtons.forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+  });
 });
 
-closeIcon.addEventListener("click", () => {
-    aside.style.display = "none";
-
-});

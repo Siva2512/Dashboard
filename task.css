@@ -25,6 +25,7 @@ body {
   border-right: 1px solid #eef1f4;
   transition: transform 0.3s ease;
   z-index: 1000;
+  overflow-y: auto;
 }
 
 /* Closed state (used only on mobile) */
@@ -117,6 +118,7 @@ body {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  bottom: 16px;
 }
 /*main content*/
 .main {
@@ -240,6 +242,7 @@ textarea {
 
 /* Project & Priority */
 .form-row.project-priority-row {
+  display: flex;
   justify-content: center;
   gap: 16px;
 }
@@ -247,6 +250,7 @@ textarea {
 .form-row.project-priority-row .form-group {
   flex: 0 0 240px;
 }
+
 
 /* Priority buttons */
 .priority {
@@ -264,6 +268,9 @@ textarea {
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  pointer-events: auto;
+  position:relative;
+  z-index: 1;
 }
 
 .priority button.active {
@@ -306,9 +313,7 @@ textarea {
   border-radius: 8px;
   cursor: pointer;
 }
-/* ======================
-   RESPONSIVE – MOBILE & TABLET
-====================== */
+/* media queries */
 @media (max-width: 768px) {
 
   /* Show hamburger icon */
@@ -316,7 +321,7 @@ textarea {
     display: block;
     font-size: 22px;
     cursor: pointer;
-    color: #137fec;
+    color: black;
   }
 
   /* Sidebar hidden by default */
@@ -332,17 +337,20 @@ textarea {
 
   /* Overlay hidden by default */
   .overlay {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  opacity: 0;
+  pointer-events: none;   /*  allow clicks */
+  z-index: 5;             /* LOWER than content */
+  transition: opacity 0.3s ease;
+}
 
-  /* Overlay shown when sidebar opens */
-  .overlay.show {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
+.overlay.show {
+  opacity: 1;
+  pointer-events: auto;   /* block clicks ONLY when sidebar open */
+}
+
 
   /* Main content full width */
   .main {

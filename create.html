@@ -3,30 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ToDo Dashboard</title>
+  <title>Create Task</title>
 
-  <!-- Icons -->
+  <!-- Font Awesome Icons -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
   />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="task.css" />
 </head>
 
 <body>
 
-<!-- APP -->
-<div class="app">
-
-  <!-- OVERLAY (for mobile sidebar) -->
-  <div class="overlay"></div>
-
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="profile">
-      <img src="https://i.pravatar.cc/60?img=12" alt="profile">
+      <img src="https://i.pravatar.cc/60?img=12" alt="profile" />
       <div>
         <h3>Alex Morgan</h3>
         <span class="plan">Free Plan</span>
@@ -42,93 +36,115 @@
 
     <div class="projects">
       <h4>MY PROJECTS</h4>
-      <div class="sub-project">
-        <p><span class="dot work"></span> Work</p>
-        <p><span class="dot personal"></span> Personal</p>
-        <p><span class="dot shopping"></span> Shopping</p>
-        <p><span class="dot wishlist"></span> Wishlist</p>
-      </div>
+      <p><span class="dot work"></span> Work</p>
+      <p><span class="dot personal"></span> Personal</p>
+      <p><span class="dot shopping"></span> Shopping</p>
+      <p><span class="dot wishlist"></span> Wishlist</p>
     </div>
 
     <button class="new-list">+ New List</button>
   </aside>
 
-  <!-- MAIN -->
+  <!-- MAIN CONTENT -->
   <main class="main">
 
-    <!-- TOP BAR -->
-    <div class="top-bar">
-
-      <!-- MENU ICON (MOBILE) -->
+    <!-- MOBILE TOP BAR -->
+    <div class="mobile-top-bar">
       <i class="fa-solid fa-bars menu-toggle"></i>
-
-      <div class="search">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search tasks, tags, or projects">
-      </div>
-
-      <div class="icons">
-        <i class="fa-regular fa-bell"></i>
-        <i class="fa-solid fa-gear"></i>
-      </div>
     </div>
 
-    <!-- WELCOME -->
-     <div class="content">
-      <div class="welcome">
-      <div>
-        <h1>Good Morning, Alex!</h1>
-        <p>You have <strong><span class="task-count">5 tasks</span></strong> remaining today</p>
-      </div>
+    <!-- CREATE TASK -->
+    <section class="create-task">
+      <div class="create-card">
 
-      <div class="progress-box">
-        <p>TODAY'S PROGRESS</p>
-
-        <div class="progress-row">
-          <div class="progress-bar">
-            <div class="progress-fill"></div>
+        <!-- HEADER -->
+        <div class="create-head">
+          <div class="head-text">
+            <h2>Create New Task</h2>
+            <p>Fill in the details below to add a new item.</p>
           </div>
 
-          <span class="progress-percent">65%</span>
-
-          <button class="add-task">
-            <i class="fa-solid fa-plus"></i> Add Task
+          <button class="filter-btn" type="button">
+            <i class="fa-solid fa-sliders"></i>
           </button>
         </div>
-      </div>
-    </div>
 
-    <!-- TODAY -->
-    <section class="card">
-      <div class="card-head">
-        <div class="focus">
-          <i class="fa-solid fa-sun" style="color: coral;"></i>
-          <h2>Today's Focus</h2>
-        </div>
-        <p class="date">Thursday, Oct 24</p>
-      </div>
+        <!-- FORM -->
+        <form class="task-form">
 
-      <!-- JS RENDER -->
-      <div class="listbox" id="todayTasks"></div>
+          <div class="form-group">
+            <label>Task Title</label>
+            <input type="text" placeholder="e.g., Q3 Report Analysis" />
+          </div>
+
+          <div class="form-group">
+            <label>Description <span>(Optional)</span></label>
+            <textarea placeholder="Add details about this task"></textarea>
+          </div>
+
+          <!-- DATE & TIME -->
+          <div class="form-row date-time-row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" />
+            </div>
+
+            <div class="form-group">
+              <label>Time</label>
+              <input type="time" />
+            </div>
+          </div>
+
+          <!-- PROJECT & PRIORITY -->
+          <div class="form-row project-priority-row">
+
+            <div class="form-group">
+              <label>Project</label>
+              <select>
+                <option>Inbox</option>
+                <option>Personal</option>
+                <option>Shopping</option>
+                <option>Wishlist</option>
+              </select>
+            </div>
+
+            <div class="form-group priority-group">
+              <label>Priority</label>
+              <div class="priority">
+                <button type="button" class="low">
+                  <span class="dot low-dot"></span> Low
+                </button>
+
+                <button type="button" class="med active">
+                  <span class="dot med-dot"></span> Med
+                </button>
+
+                <button type="button" class="high">
+                  <span class="dot high-dot"></span> High
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- FOOTER -->
+          <div class="footer">
+            <button type="button" class="cancel-btn">Cancel</button>
+            <button type="submit" class="submit-btn">
+              <i class="fa-solid fa-check"></i> Create Task
+            </button>
+          </div>
+
+        </form>
+      </div>
     </section>
-
-    <!-- UPCOMING -->
-    <section class="upcoming">
-      <div class="uphead">
-        <i class="fa-solid fa-calendar-days upcoming-icon"></i>
-        <h2>Upcoming</h2>
-      </div>
-
-      <!-- JS RENDER -->
-      <div class="up-cards" id="upcomingTasks"></div>
-    </section>
-     </div>
-    
-
   </main>
-</div>
 
-<!-- JS -->
-<script src="todo.js"></script>
+  <!-- OVERLAY -->
+  <div class="overlay"></div>
+
+  <!-- JS -->
+  <script src="todo.js"></script>
+
 </body>
 </html>
