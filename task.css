@@ -1,0 +1,396 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  background: #f6f7f8;
+  overflow-x: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #ffffff;
+  padding: 20px 16px;
+  border-right: 1px solid #eef1f4;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+/* Closed state (used only on mobile) */
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 900;
+}
+
+.overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/*sidebar header*/
+.profile {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile img {
+  width: 50px;
+  border-radius: 50%;
+}
+
+.menu {
+  border-bottom: 1px solid #eef1f4;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.menu a {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  text-decoration: none;
+  color: #4a6076;
+  border-radius: 6px;
+}
+
+.menu a:hover,
+.menu a.active {
+  background: #e7f2fd;
+  color: #1081ec;
+}
+
+.projects h4 {
+  color: #a6b3c4;
+  margin-bottom: 10px;
+}
+
+.projects p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4a6076;
+  margin-bottom: 8px;
+}
+
+/* Project dots */
+.projects .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot.work { background: #22c55e; }
+.dot.personal { background: #a855f7; }
+.dot.shopping { background: #f97316; }
+.dot.wishlist { background: #ec4899; }
+
+/* New list button */
+.new-list {
+  margin-top: auto;
+  width: 100%;
+  padding: 12px;
+  background: #137fec;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+/*main content*/
+.main {
+  margin-left: 260px;
+  transition: margin-left 0.3s ease;
+}
+
+.main.full {
+  margin-left: 0;
+}
+
+/*top bar*/
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+/* Menu (hamburger) icon */
+.menu-toggle {
+  font-size: 22px;
+  color: #137fec;
+  cursor: pointer;
+  display: none; /* hidden on desktop */
+}
+
+/*create task*/
+.create-task {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.create-card {
+  width: 520px;
+  max-width: 100%;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+/* Header */
+.create-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.head-text h2 {
+  font-size: 18px;
+}
+
+.head-text p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* Filter button */
+.filter-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid #e7f2fd;
+  background: #e7f2fd;
+  color: #137fec;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*form*/
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-weight: 600;
+}
+
+.form-group label span {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  margin-top: 8px;
+  height: 40px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  font-size: 14px;
+}
+
+textarea {
+  height: 90px;
+}
+
+/* Rows */
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+/* Date & Time */
+.form-row.date-time-row {
+  justify-content: center;
+  gap: 16px;
+}
+
+.form-row.date-time-row .form-group {
+  flex: 0 0 240px;
+}
+
+/* Project & Priority */
+.form-row.project-priority-row {
+  justify-content: center;
+  gap: 16px;
+}
+
+.form-row.project-priority-row .form-group {
+  flex: 0 0 240px;
+}
+
+/* Priority buttons */
+.priority {
+  display: flex;
+  gap: 8px;
+}
+
+.priority button {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.priority button.active {
+  background: #fff7ed;
+  border-color: #f97316;
+  color: #ea580c;
+}
+
+/* Dots */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.low-dot { background: #16a34a; }
+.med-dot { background: #f97316; }
+.high-dot { background: #dc2626; }
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.cancel-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.submit-btn {
+  background: #137fec;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* ======================
+   RESPONSIVE – MOBILE & TABLET
+====================== */
+@media (max-width: 768px) {
+
+  /* Show hamburger icon */
+  .menu-toggle {
+    display: block;
+    font-size: 22px;
+    cursor: pointer;
+    color: #137fec;
+  }
+
+  /* Sidebar hidden by default */
+  .sidebar {
+    transform: translateX(-100%);
+    width: 260px;
+  }
+
+  /* Sidebar opens when JS adds .open */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Overlay hidden by default */
+  .overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* Overlay shown when sidebar opens */
+  .overlay.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Main content full width */
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* Create task spacing */
+  .create-task {
+    padding: 20px;
+  }
+
+  /* Stack form rows */
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-row.date-time-row,
+  .form-row.project-priority-row {
+    align-items: stretch;
+  }
+
+  .form-row.date-time-row .form-group,
+  .form-row.project-priority-row .form-group {
+    flex: 1;
+  }
+
+  /* Priority buttons wrap */
+  .priority {
+    flex-wrap: wrap;
+  }
+
+  .priority button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Footer buttons stack */
+  .footer {
+    flex-direction: column;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+}
