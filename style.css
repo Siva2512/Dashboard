@@ -310,6 +310,64 @@ body {
   border-radius: 10px;
   padding: 10px 20px;
 }
+/* ROW LAYOUT */
+.task-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* LEFT SIDE */
+.task-left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.task-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ACTION ICONS */
+.change {
+  display: flex;
+  gap: 10px;
+}
+
+.change div {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* ICON COLORS */
+.change .edit {
+  background: #e0f2fe;
+  color: black;
+}
+
+.change .update {
+  background: #ede9fe;
+  color: black;
+}
+
+.change .delete {
+  background: #fee2e2;
+  color: black;
+}
+
+/* HOVER */
+.change div:hover {
+  transform: scale(1.1);
+}
+
 
 /* TASK ROW */
 .task {
@@ -415,7 +473,8 @@ body {
 }
 
 .up-cards {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
