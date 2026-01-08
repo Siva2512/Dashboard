@@ -30,12 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Task Created:", task);
 
-    // save task
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    tasks.push(task);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    // // save task
+    // const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    // tasks.push(task);
+    // localStorage.setItem("tasks", JSON.stringify(tasks));
 
-    alert("Task created successfully!");
+    // alert("Task created successfully!");
     
 
     // ✅ redirect to dashboard

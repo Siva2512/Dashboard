@@ -10,13 +10,25 @@ document.addEventListener("DOMContentLoaded", () => {
     return d;
   }
 
-  function getTodayTasks(tasks) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return tasks.filter(
-      t => normalizeDate(t.date)?.getTime() === today.getTime()
-    );
-  }
+  function normalizeDateStrict(dateStr) {
+  if (!dateStr) return null;
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+
+ function getTodayTasks(tasks) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return tasks.filter(t => {
+    const d = normalizeDateStrict(t.date);
+    if (!d) return false;
+    d.setHours(0, 0, 0, 0);
+    return d.getTime() === today.getTime();
+  });
+}
+
 
   function getTomorrowTasks(tasks) {
     const tomorrow = new Date();
@@ -49,6 +61,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return [...list].sort((a, b) => toMinutes(a.time) - toMinutes(b.time));
   }
+
+
+  function updateTodayTaskCount() {
+  const el = document.querySelector(".task-count");
+  if (!el) return;
+
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let count = 0;
+
+  tasks.forEach(t => {
+    if (!t.date) return;
+
+    const d = new Date(t.date + "T00:00:00");
+    d.setHours(0, 0, 0, 0);
+
+    if (d.getTime() === today.getTime() && t.status !== "complete") {
+      count++;
+    }
+  });
+
+  el.textContent = count;
+}
+// updateTodayTaskCount();
+
+
 
   /*renderDynamicToday*/
  function renderDynamicToday(list) {
@@ -84,7 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="task task-row" data-index="${realIndex}" data-type="dynamic">
 
         <div class="task-left">
-          <input type="checkbox">
+          <input type="checkbox" ${t.status === "complete" ? "checked" : ""}>
+
           <div>
             <p class="task-title">${t.title}</p>
             <div class="task-meta">
@@ -109,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <ul class="dropdown">
             <li><i class="fa-solid fa-check"></i> Complete</li>
-            <li><i class="fa-solid fa-spinner"></i> In Progress</li>
+            <li><i class="fa-solid fa-spinner"></i> Progress</li>
             <li><i class="fa-solid fa-clock"></i> Pending</li>
           </ul>
 
@@ -122,6 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }).join("");
 }
+
+
 
 
   /*Dropdown*/
@@ -142,56 +186,68 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /*progress bar*/
 
-  function updateProgressBar() {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+function updateProgressBar(initial = false) {
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    const total = tasks.length;
-    const completed = tasks.filter(t => t.status === "complete").length;
+  const todayTasks = getTodayTasks(tasks);
 
-    const percent = total === 0
-      ? 0
-      : Math.round((completed / total) * 100);
+  const total = todayTasks.length;
+  const completed = todayTasks.filter(t => t.status === "complete").length;
 
-    const fill = document.querySelector(".progress-fill");
-    const label = document.querySelector(".progress-percent");
+  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
-    if (fill) fill.style.width = percent + "%";
-    if (label) label.textContent = percent + "%";
+  const fill = document.querySelector(".progress-fill");
+  const label = document.querySelector(".progress-percent");
+
+  if (!fill || !label) return;
+
+  if (initial) fill.style.transition = "none";
+
+  fill.style.width = percent + "%";
+  label.textContent = percent + "%";
+
+  if (initial) {
+    requestAnimationFrame(() => {
+      fill.style.transition = "width 0.3s ease";
+    });
   }
+}
+
+
+
 
   /* status change */
 
-  document.addEventListener("click", e => {
-    const statusItem = e.target.closest(".dropdown li");
-    if (!statusItem) return;
+ document.addEventListener("click", e => {
+  const statusItem = e.target.closest(".dropdown li");
+  if (!statusItem) return;
 
-    const row = statusItem.closest(".task-row");
-    if (!row) return;
+  const row = statusItem.closest(".task-row");
+  if (!row) return;
 
-    const realindex = Number(row.dataset.index);
+  
+  const realIndex = Number(row.dataset.index);
 
-    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
-    const todayTasks = getTodayTasks(stored);
-    const task = todayTasks[index];
-    if (!task) return;
+  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+  if (!stored[realIndex]) return;
 
-    const realIndex = stored.findIndex(
-      t => t.title === task.title && t.date === task.date
-    );
+  const text = statusItem.textContent.toLowerCase().trim();
+   if (text.includes("complete")) {
+    stored[realIndex].status = "complete";
+  } else if (text.includes("progress")) {
+    stored[realIndex].status = "progress";
+  } else if (text.includes("pending")) {
+    stored[realIndex].status = "pending";
+  }
 
-    if (realIndex === -1) return;
+  localStorage.setItem("tasks", JSON.stringify(stored));
 
-    const text = statusItem.textContent.toLowerCase();
+  renderDynamicToday(getTodayTasks(stored));
+  renderUpcoming();
+  updateProgressBar(true);
+  updateTodayTaskCount();
+});
 
-    if (text.includes("complete")) stored[realIndex].status = "complete";
-    if (text.includes("progress")) stored[realIndex].status = "progress";
-    if (text.includes("pending")) stored[realIndex].status = "pending";
-
-    localStorage.setItem("tasks", JSON.stringify(stored));
-
-    updateProgressBar();
-    renderDynamicToday(getTodayTasks(stored));
-  });
 
   /*filter tasks by status*/
 
@@ -244,6 +300,130 @@ document.addEventListener("DOMContentLoaded", () => {
       renderDynamicToday(filtered);
     });
   }
+
+  // MODAL
+const taskModal = document.getElementById("taskModal");
+const closeModal = document.getElementById("closeModal");
+const cancelModal = document.getElementById("cancelModal");
+const addTaskBtn = document.querySelector(".add-task");
+const newListBtn = document.querySelector(".new-list");
+let editIndex = null; // track edit mode
+
+function openModal() {
+  taskModal.classList.add("active");
+}
+
+function closeTaskModal() {
+  taskModal.classList.remove("active");
+  taskForm.reset();
+  editIndex = null;
+}
+
+// Open modal
+addTaskBtn?.addEventListener("click", openModal);
+newListBtn?.addEventListener("click", openModal);
+
+// Close modal
+closeModal?.addEventListener("click", closeTaskModal);
+cancelModal?.addEventListener("click", closeTaskModal);
+
+// Close on outside click
+taskModal?.addEventListener("click", e => {
+  if (e.target === taskModal) closeTaskModal();
+});
+
+// CHECKBOX update instead of click
+document.addEventListener("change", e => {
+  const checkbox = e.target;
+
+  if (!checkbox.matches('.task-row input[type="checkbox"]')) return;
+
+  const row = checkbox.closest(".task-row");
+  if (!row) return;
+
+  const index = Number(row.dataset.index);
+
+  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+  if (!stored[index]) return;
+
+  // Update status based on checkbox
+  stored[index].status = checkbox.checked ? "complete" : "pending";
+
+  localStorage.setItem("tasks", JSON.stringify(stored));
+
+  // Update UI
+  updateProgressBar();
+  updateTodayTaskCount();
+});
+
+// EDIT TASK (OPEN MODAL WITH DATA)
+document.addEventListener("click", e => {
+  const editBtn = e.target.closest(".edit");
+  if (!editBtn) return;
+
+  const row =
+    editBtn.closest(".task-row") ||
+    editBtn.closest(".up-item");
+
+  if (!row) return;
+
+  const index = Number(row.dataset.index);
+  if (Number.isNaN(index)) return;
+
+  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+  const task = stored[index];
+  if (!task) return;
+
+  const taskForm = document.querySelector(".task-form");
+  if (!taskForm) return;
+
+  editIndex = index;
+
+  // Fill form
+  taskForm.querySelector('input[type="text"]').value = task.title || "";
+  taskForm.querySelector('input[type="date"]').value = task.date || "";
+  taskForm.querySelector('input[type="time"]').value = task.time || "";
+  taskForm.querySelector("select").value = task.project || "";
+
+  // Priority
+  selectedPriority = task.priority || "Med";
+  document.querySelectorAll(".priority button").forEach(btn => {
+    btn.classList.toggle(
+      "active",
+      btn.textContent.trim() === selectedPriority
+    );
+  });
+
+  openModal(); // show modal
+});
+
+
+// DELETE TASK
+document.addEventListener("click", e => {
+  const deleteBtn = e.target.closest(".delete");
+  if (!deleteBtn) return;
+
+  const row =
+  deleteBtn.closest(".task-row") ||
+  deleteBtn.closest(".up-item");
+
+  const index = Number(row.dataset.index);
+
+  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+
+  if (!stored[index]) return;
+
+  if (!confirm("Delete this task?")) return;
+
+  stored.splice(index, 1);
+  localStorage.setItem("tasks", JSON.stringify(stored));
+
+  renderDynamicToday(getTodayTasks(stored));
+  renderUpcoming();
+  updateProgressBar();
+});
+
+
 
   /* date helpers */
 
@@ -299,28 +479,42 @@ document.addEventListener("DOMContentLoaded", () => {
           No upcoming tasks.<br />
           Create a task to view here.
         </div>
+        
       `;
       return;
     }
 
-    const tomorrowTasks = stored.filter(t => isTomorrowLocal(t.date));
-    const weekTasks = stored.filter(
-      t => !isTomorrowLocal(t.date) && isThisWeekLocal(t.date)
-    );
+   const tomorrowTasks = stored
+  .map((t, i) => ({ ...t, _index: i }))
+  .filter(t => isTomorrowLocal(t.date));
+
+const weekTasks = stored
+  .map((t, i) => ({ ...t, _index: i }))
+  .filter(t => !isTomorrowLocal(t.date) && isThisWeekLocal(t.date));
+
 
     if (tomorrowTasks.length) {
       container.innerHTML += `
         <div class="up-card">
           <h4>TOMORROW</h4>
           ${tomorrowTasks.map(t => `
-            <div class="up-item">
+            <div class="up-item" data-index="${t._index}">
               <div class="up-icon blue">
                 <i class="fa-solid fa-calendar"></i>
               </div>
+              
               <div class="up-text">
                 <p class="title">${t.title}</p>
                 <span class="sub">${t.project}</span>
               </div>
+              <div class="change">
+               <div class="edit">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <div class="delete">
+            <i class="fa-solid fa-trash"></i>
+          </div>
+        </div>
             </div>
           `).join("")}
         </div>
@@ -332,7 +526,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="up-card">
           <h4>THIS WEEK</h4>
           ${weekTasks.map(t => `
-            <div class="up-item">
+            <div class="up-item" data-index="${t._index}">
               <div class="up-icon green">
                 <i class="fa-solid fa-calendar-days"></i>
               </div>
@@ -342,6 +536,14 @@ document.addEventListener("DOMContentLoaded", () => {
                   ${getDayName(t.date)} • ${t.project}
                 </span>
               </div>
+              <div class="change">
+               <div class="edit">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <div class="delete">
+            <i class="fa-solid fa-trash"></i>
+          </div>
+        </div>
             </div>
           `).join("")}
         </div>
@@ -385,47 +587,63 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const taskForm = document.querySelector(".task-form");
 
-  if (taskForm) {
-    taskForm.addEventListener("submit", e => {
-      e.preventDefault();
+if (taskForm && !taskForm.dataset.bound) {
+  taskForm.dataset.bound = "true";
 
-      const newTask = {
-        title: taskForm.querySelector('input[type="text"]').value,
-        date: taskForm.querySelector('input[type="date"]').value,
-        time: taskForm.querySelector('input[type="time"]').value,
-        project: taskForm.querySelector("select").value,
-        priority: selectedPriority,
-        status: "incomplete"
-      };
+  taskForm.addEventListener("submit", e => {
+    e.preventDefault();
 
-      const stored = JSON.parse(localStorage.getItem("tasks")) || [];
-      stored.push(newTask);
-      localStorage.setItem("tasks", JSON.stringify(stored));
+    const newTask = {
+      title: taskForm.querySelector('input[type="text"]').value,
+      date: taskForm.querySelector('input[type="date"]').value,
+      time: taskForm.querySelector('input[type="time"]').value,
+      project: taskForm.querySelector("select").value,
+      priority: selectedPriority,
+      status: "pending"
+    };
 
-      alert("Task saved");
+    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+    stored.push(newTask);
+    localStorage.setItem("tasks", JSON.stringify(stored));
 
-      setTimeout(() => {
-        window.location.href = "Home.html";
-      }, 1000);
+    alert("Task saved");
 
-      taskForm.reset();
-    });
-  }
+    setTimeout(() => {
+      window.location.href = "Home.html";
+    }, 1000);
+
+    taskForm.reset();
+  });
+}
+
 
 
   
 
   /*Initial render*/
-  renderDynamicToday(getTodayTasks(tasks));
-  renderUpcoming();
+  /*Initial render*/
+renderDynamicToday(getTodayTasks(tasks));
+renderUpcoming();
+updateProgressBar(true);
+updateTodayTaskCount();
+
 
 });
 
 /*add task*/
 const addTaskBtn = document.querySelector(".add-task");
+const modal = document.getElementById("taskModal");
 
-if (addTaskBtn) {
+if (addTaskBtn && modal) {
   addTaskBtn.addEventListener("click", () => {
-    window.location.href = "create.html";
+    modal.classList.add("show");
   });
 }
+document.getElementById("closeModal")?.addEventListener("click", () => {
+  modal.classList.remove("show");
+});
+
+document.getElementById("cancelModal")?.addEventListener("click", () => {
+  modal.classList.remove("show");
+});
+
