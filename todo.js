@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* Helpers */
-
+/*Convert date string to date object*/
   function normalizeDate(dateStr) {
     if (!dateStr) return null;
     const d = new Date(dateStr);
@@ -9,14 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
     d.setHours(0, 0, 0, 0);
     return d;
   }
-
+/*manually convert date string to date object*/
   function normalizeDateStrict(dateStr) {
   if (!dateStr) return null;
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
 
-
+/*helper to get today's date*/
  function getTodayTasks(tasks) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 }
 
-
+/*helper to get tomorrow's date*/
   function getTomorrowTasks(tasks) {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -38,50 +38,49 @@ document.addEventListener("DOMContentLoaded", () => {
       t => normalizeDate(t.date)?.getTime() === tomorrow.getTime()
     );
   }
-
+/*helper to get future date*/
   function getFutureTasks(tasks) {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
     return tasks.filter(t => normalizeDate(t.date) > tomorrow);
   }
-
-  /* LOAD TASKS */
+   /* LOAD TASKS */
 
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
   /*SORT BY TIME*/
 
-  function sortByTime(list) {
+  function sortByTime(list) {  //sort tasks by time
     const toMinutes = (time) => {
       if (!time) return Infinity;
       const [h, m] = time.split(":").map(Number);
-      return h * 60 + m;
+      return h * 60 + m; // convert to minutes
     };
 
-    return [...list].sort((a, b) => toMinutes(a.time) - toMinutes(b.time));
+    return [...list].sort((a, b) => toMinutes(a.time) - toMinutes(b.time)); //make a copy of the list and sort it
   }
 
 
-  function updateTodayTaskCount() {
+  function updateTodayTaskCount() { //calculate today's task count
   const el = document.querySelector(".task-count");
   if (!el) return;
 
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || []; //read saved tasks
 
-  const today = new Date();
+  const today = new Date();//get today date
   today.setHours(0, 0, 0, 0);
 
   let count = 0;
 
   tasks.forEach(t => {
-    if (!t.date) return;
+    if (!t.date) return; //skip tasks without a date
 
     const d = new Date(t.date + "T00:00:00");
     d.setHours(0, 0, 0, 0);
 
-    if (d.getTime() === today.getTime() && t.status !== "complete") {
-      count++;
+    if (d.getTime() === today.getTime() && t.status !== "complete") { //check if task is today and not complete
+      count++;//if not complete, increment count
     }
   });
 
@@ -92,11 +91,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*renderDynamicToday*/
- function renderDynamicToday(list) {
+ function renderDynamicToday(list) {//render today's tasks
   const container = document.getElementById("todayTasks");
   if (!container) return;
 
-  container.innerHTML = "";
+  container.innerHTML = "";//clear old tasks
 
   if (!list.length) {
     container.innerHTML = `
@@ -108,13 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const sortedList = sortByTime(list);
+  const sortedList = sortByTime(list);//sort tasks by time
   const stored = JSON.parse(localStorage.getItem("tasks")) || [];
 
   container.innerHTML = sortedList.map((t) => {
 
     const realIndex = stored.findIndex(
-      x => x.title === t.title && x.date === t.date
+      x => x.title === t.title && x.date === t.date //list  passed filter and sort tasks
     );
 
     const projectClass = t.project
@@ -191,13 +190,13 @@ function updateProgressBar(initial = false) {
 
   const todayTasks = getTodayTasks(tasks);
 
-  const total = todayTasks.length;
+  const total = todayTasks.length;//count total tasks
   const completed = todayTasks.filter(t => t.status === "complete").length;
 
-  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);//calculate percentage(1/5=20%)
 
-  const fill = document.querySelector(".progress-fill");
-  const label = document.querySelector(".progress-percent");
+  const fill = document.querySelector(".progress-fill");//get progress bar
+  const label = document.querySelector(".progress-percent");//text show percentage
 
   if (!fill || !label) return;
 
@@ -646,4 +645,3 @@ document.getElementById("closeModal")?.addEventListener("click", () => {
 document.getElementById("cancelModal")?.addEventListener("click", () => {
   modal.classList.remove("show");
 });
-

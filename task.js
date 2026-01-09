@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ===== PRIORITY TOGGLE ===== */
+  /* PRIORITY */
   const priorityButtons = document.querySelectorAll(".priority button");
   let selectedPriority = "Med"; // default (because Med is active in HTML)
 
@@ -29,16 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     console.log("Task Created:", task);
-
-    // // save task
-    // const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    // tasks.push(task);
-    // localStorage.setItem("tasks", JSON.stringify(tasks));
-
-    // alert("Task created successfully!");
-    
-
-    // ✅ redirect to dashboard
   });
 
 });
