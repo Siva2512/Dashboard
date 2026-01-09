@@ -70,11 +70,6 @@
         <i class="fa-solid fa-magnifying-glass"></i>
         <input id="searchInput" type="text" placeholder="Search tasks, tags, or projects">
       </div>
-
-      <div class="icons">
-        <i class="fa-regular fa-bell"></i>
-        <i class="fa-solid fa-gear"></i>
-      </div>
     </div>
 
     <!-- CONTENT -->
@@ -142,8 +137,8 @@
     <!-- MODAL HEADER -->
     <div class="create-head">
       <div class="head-text">
-        <h2>Create New Task</h2>
-        <p>Fill in the details below to add a new item.</p>
+        <h2 id="modal-title">Create New Task</h2>
+        <p id="modal-subtitle">Fill in the details below to add a new item.</p>
       </div>
       <i class="fa-solid fa-xmark close-modal" id="closeModal"></i>
     </div>
@@ -208,9 +203,10 @@
 
       <div class="footer">
         <button type="button" class="cancel-btn" id="cancelModal">Cancel</button>
-        <button type="submit" class="submit-btn">
-          <i class="fa-solid fa-check"></i> Save Task
-        </button>
+        <button type="submit" class="submit-btn" id="submit-btn">
+  <i class="fa-solid fa-check"></i> Save Task
+</button>
+
       </div>
 
     </form>

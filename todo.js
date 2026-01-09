@@ -258,21 +258,23 @@ function updateProgressBar(initial = false) {
 
     if (status === "all") {
       filtered = todayTasks;
+      // console.log(filtered);
     } else {
       filtered = todayTasks.filter(t => t.status === status);
+      console.log(filtered);
     }
 
     renderDynamicToday(filtered);
   }
-
-  document.getElementById("nav-complete")
+  document.getElementById("nav-complete1")
     ?.addEventListener("click", () => filterTasksByStatus("complete"));
 
-  document.getElementById("nav-progress")
+  document.getElementById("nav-progress1")
     ?.addEventListener("click", () => filterTasksByStatus("progress"));
 
-  document.getElementById("nav-pending")
+  document.getElementById("nav-pending1")
     ?.addEventListener("click", () => filterTasksByStatus("pending"));
+
 
   /*Search*/
 
@@ -318,6 +320,9 @@ function closeTaskModal() {
   editIndex = null;
 }
 
+
+
+
 // Open modal
 addTaskBtn?.addEventListener("click", openModal);
 newListBtn?.addEventListener("click", openModal);
@@ -360,10 +365,9 @@ document.addEventListener("click", e => {
   const editBtn = e.target.closest(".edit");
   if (!editBtn) return;
 
-  const row =
-    editBtn.closest(".task-row") ||
-    editBtn.closest(".up-item");
+  e.preventDefault(); //  important if inside <a>
 
+  const row = editBtn.closest(".task-row") || editBtn.closest(".up-item");
   if (!row) return;
 
   const index = Number(row.dataset.index);
@@ -393,8 +397,16 @@ document.addEventListener("click", e => {
     );
   });
 
-  openModal(); // show modal
+  
+  document.getElementById("modal-title").textContent = "Edit Task";
+  document.getElementById("modal-subtitle").textContent =
+    "Update the details below.";
+  document.getElementById("submit-btn").innerHTML =
+    '<i class="fa-solid fa-pen"></i> Update Task';
+
+  openModal();
 });
+
 
 
 // DELETE TASK
@@ -583,8 +595,9 @@ const weekTasks = stored
   });
 
   /*CREATE TASK*/
+  
 
-  const taskForm = document.querySelector(".task-form");
+ const taskForm = document.querySelector(".task-form");
 
 if (taskForm && !taskForm.dataset.bound) {
   taskForm.dataset.bound = "true";
@@ -592,18 +605,31 @@ if (taskForm && !taskForm.dataset.bound) {
   taskForm.addEventListener("submit", e => {
     e.preventDefault();
 
+    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+
     const newTask = {
       title: taskForm.querySelector('input[type="text"]').value,
       date: taskForm.querySelector('input[type="date"]').value,
       time: taskForm.querySelector('input[type="time"]').value,
       project: taskForm.querySelector("select").value,
       priority: selectedPriority,
-      status: "pending"
+      status: editIndex !== null
+        ? stored[editIndex].status   // keep old status
+        : "pending"
     };
 
-    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
-    stored.push(newTask);
+    if (editIndex !== null) {
+      // UPDATE existing task
+      stored[editIndex] = newTask;
+    } else {
+      // CREATE new task
+      stored.push(newTask);
+    }
+
     localStorage.setItem("tasks", JSON.stringify(stored));
+
+    editIndex = null;
+    closeTaskModal(); // make sure this exists
 
     alert("Task saved");
 
@@ -614,6 +640,7 @@ if (taskForm && !taskForm.dataset.bound) {
     taskForm.reset();
   });
 }
+
 
 
 
@@ -644,4 +671,18 @@ document.getElementById("closeModal")?.addEventListener("click", () => {
 
 document.getElementById("cancelModal")?.addEventListener("click", () => {
   modal.classList.remove("show");
+});
+
+const menuToggle = document.querySelector(".menu-toggle");
+const sidebar = document.querySelector(".sidebar");
+const overlay = document.querySelector(".overlay");
+
+menuToggle?.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
+  overlay?.classList.toggle("show");
+});
+
+overlay?.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  overlay.classList.remove("show");
 });

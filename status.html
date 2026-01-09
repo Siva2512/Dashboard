@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />  <!-- dashboard -->
+  <link rel="stylesheet" href="task.css" />   <!-- modal form -->
+    </head>
+    <body>
+        
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="profile">
+      <img src="https://i.pravatar.cc/60?img=12" alt="profile">
+      <div>
+        <h3>Alex Morgan</h3>
+        <span class="plan">Free Plan</span>
+      </div>
+    </div>
+
+    <!-- SIDEBAR MENU -->
+     <nav class="menu">
+  <a href="Home.html" id="nav-all">
+    <i class="fa-solid fa-table-cells-large"></i> Dashboard
+  </a>
+
+  <a href="status.html?status=complete" id="nav-complete">
+    <i class="fa-solid fa-inbox"></i> Completed
+  </a>
+
+  <a href="status.html?status=progress" id="nav-progress">
+    <i class="fa-regular fa-calendar"></i> In Progress
+  </a>
+
+  <a href="status.html?status=pending" id="nav-pending">
+    <i class="fa-solid fa-arrow-right-long"></i> Pending
+  </a>
+</nav>
+
+
+    <div class="projects">
+      <h4>MY PROJECTS</h4>
+      <div class="sub-project">
+        <p><span class="dot work"></span> Work</p>
+        <p><span class="dot personal"></span> Personal</p>
+        <p><span class="dot shopping"></span> Shopping</p>
+        <p><span class="dot wishlist"></span> Wishlist</p>
+      </div>
+    </div>
+
+    <button class="new-list">+ New List</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <i class="fa-solid fa-bars menu-toggle"></i>
+
+      <div class="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchInput" type="text" placeholder="Search tasks, tags, or projects">
+      </div>
+
+      <div class="icons">
+        <i class="fa-regular fa-bell"></i>
+        <i class="fa-solid fa-gear"></i>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- WELCOME -->
+      <div class="welcome">
+        <div>
+          <h1>Good Morning, Alex!</h1>
+          <p>You have <strong><span class="task-count">0 tasks</span></strong> remaining today</p>
+        </div>
+
+        <div class="bar">
+
+          <!-- PROGRESS BAR -->
+          <div class="progress-box">
+            <p>TODAY'S PROGRESS</p>
+            <div class="progress-row">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <span class="progress-percent">0%</span>
+            </div>
+          </div>
+
+          <!-- ADD TASK -->
+          <button class="add-task">
+            <i class="fa-solid fa-plus"></i> Add Task
+          </button>
+
+        </div>
+      </div>
+
+      <!-- TODAY -->
+      <section class="card">
+        <div class="card-head">
+          <div class="focus">
+            <i class="fa-solid fa-sun" style="color: coral;"></i>
+            <h2>Today's Focus</h2>
+          </div>
+          <p class="date" id="todayDate"></p>
+        </div>
+
+        <div class="listbox" id="todayTasks"></div>
+      </section>
+      <!-- <script src="script.js"></script> -->
+      <script src="todo.js"></script>
+
+
+    </body>
+</html>
