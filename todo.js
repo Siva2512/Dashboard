@@ -642,7 +642,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Task saved");
 
       setTimeout(() => {
-        window.location.href = "Home.html";
+        window.location.href = "index.html";
       }, 1000);
 
       taskForm.reset();
