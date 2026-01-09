@@ -416,6 +416,7 @@ body {
   cursor: pointer;
 }
 .empty-state {
+  background-color: white;
   padding: 20px;
   text-align: center;
   color: #94a3b8;
@@ -638,6 +639,11 @@ body {
   transition: 0.3s ease;
   z-index: 900;
 }
+.overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
 /* MODAL OVERLAY */
 .task-modal {
   display: none;
@@ -742,15 +748,24 @@ body {
   }
 
   /* overlay */
-  .overlay {
-    opacity: 0;
-    visibility: hidden;
-  }
+  /* overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;   /* 🔴 IMPORTANT */
+  transition: opacity 0.3s ease;
+  z-index: 900;
+}
 
-  .overlay.show {
-    opacity: 1;
-    visibility: visible;
-  }
+.overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;   /* 🔴 ALLOWS CLICK */
+}
+
 
   /* main full width */
   .main {

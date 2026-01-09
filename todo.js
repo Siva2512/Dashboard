@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* Helpers */
-/*Convert date string to date object*/
+  /*Convert date string to date object*/
   function normalizeDate(dateStr) {
     if (!dateStr) return null;
     const d = new Date(dateStr);
@@ -9,27 +9,27 @@ document.addEventListener("DOMContentLoaded", () => {
     d.setHours(0, 0, 0, 0);
     return d;
   }
-/*manually convert date string to date object*/
+  /*manually convert date string to date object*/
   function normalizeDateStrict(dateStr) {
-  if (!dateStr) return null;
-  const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
+    if (!dateStr) return null;
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
 
-/*helper to get today's date*/
- function getTodayTasks(tasks) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  /*helper to get today's date*/
+  function getTodayTasks(tasks) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  return tasks.filter(t => {
-    const d = normalizeDateStrict(t.date);
-    if (!d) return false;
-    d.setHours(0, 0, 0, 0);
-    return d.getTime() === today.getTime();
-  });
-}
+    return tasks.filter(t => {
+      const d = normalizeDateStrict(t.date);
+      if (!d) return false;
+      d.setHours(0, 0, 0, 0);
+      return d.getTime() === today.getTime();
+    });
+  }
 
-/*helper to get tomorrow's date*/
+  /*helper to get tomorrow's date*/
   function getTomorrowTasks(tasks) {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -38,14 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
       t => normalizeDate(t.date)?.getTime() === tomorrow.getTime()
     );
   }
-/*helper to get future date*/
+  /*helper to get future date*/
   function getFutureTasks(tasks) {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
     return tasks.filter(t => normalizeDate(t.date) > tomorrow);
   }
-   /* LOAD TASKS */
+  /* LOAD TASKS */
 
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
@@ -63,64 +63,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   function updateTodayTaskCount() { //calculate today's task count
-  const el = document.querySelector(".task-count");
-  if (!el) return;
+    const el = document.querySelector(".task-count");
+    if (!el) return;
 
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || []; //read saved tasks
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || []; //read saved tasks
 
-  const today = new Date();//get today date
-  today.setHours(0, 0, 0, 0);
+    const today = new Date();//get today date
+    today.setHours(0, 0, 0, 0);
 
-  let count = 0;
+    let count = 0;
 
-  tasks.forEach(t => {
-    if (!t.date) return; //skip tasks without a date
+    tasks.forEach(t => {
+      if (!t.date) return; //skip tasks without a date
 
-    const d = new Date(t.date + "T00:00:00");
-    d.setHours(0, 0, 0, 0);
+      const d = new Date(t.date + "T00:00:00");
+      d.setHours(0, 0, 0, 0);
 
-    if (d.getTime() === today.getTime() && t.status !== "complete") { //check if task is today and not complete
-      count++;//if not complete, increment count
-    }
-  });
+      if (d.getTime() === today.getTime() && t.status !== "complete") { //check if task is today and not complete
+        count++;//if not complete, increment count
+      }
+    });
 
-  el.textContent = count;
-}
-// updateTodayTaskCount();
+    el.textContent = count;
+  }
+  // updateTodayTaskCount();
 
 
 
   /*renderDynamicToday*/
- function renderDynamicToday(list) {//render today's tasks
-  const container = document.getElementById("todayTasks");
-  if (!container) return;
+  function renderDynamicToday(list) {//render today's tasks
+    const container = document.getElementById("todayTasks");
+    if (!container) return;
 
-  container.innerHTML = "";//clear old tasks
+    container.innerHTML = "";//clear old tasks
 
-  if (!list.length) {
-    container.innerHTML = `
+    if (!list.length) {
+      container.innerHTML = `
       <div class="empty-state">
         No tasks created.<br />
         Create a task to view here.
       </div>
     `;
-    return;
-  }
+      return;
+    }
 
-  const sortedList = sortByTime(list);//sort tasks by time
-  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+    const sortedList = sortByTime(list);//sort tasks by time
+    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
 
-  container.innerHTML = sortedList.map((t) => {
+    container.innerHTML = sortedList.map((t) => {
 
-    const realIndex = stored.findIndex(
-      x => x.title === t.title && x.date === t.date //list  passed filter and sort tasks
-    );
+      const realIndex = stored.findIndex(
+        x => x.title === t.title && x.date === t.date //list  passed filter and sort tasks
+      );
 
-    const projectClass = t.project
-      ? t.project.toLowerCase()
-      : "general";
+      const projectClass = t.project
+        ? t.project.toLowerCase()
+        : "general";
 
-    return `
+      return `
       <div class="task task-row" data-index="${realIndex}" data-type="dynamic">
 
         <div class="task-left">
@@ -161,8 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       </div>
     `;
-  }).join("");
-}
+    }).join("");
+  }
 
 
 
@@ -185,67 +185,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /*progress bar*/
 
-function updateProgressBar(initial = false) {
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  function updateProgressBar(initial = false) {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-  const todayTasks = getTodayTasks(tasks);
+    const todayTasks = getTodayTasks(tasks);
 
-  const total = todayTasks.length;//count total tasks
-  const completed = todayTasks.filter(t => t.status === "complete").length;
+    const total = todayTasks.length;//count total tasks
+    const completed = todayTasks.filter(t => t.status === "complete").length;
 
-  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);//calculate percentage(1/5=20%)
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);//calculate percentage(1/5=20%)
 
-  const fill = document.querySelector(".progress-fill");//get progress bar
-  const label = document.querySelector(".progress-percent");//text show percentage
+    const fill = document.querySelector(".progress-fill");//get progress bar
+    const label = document.querySelector(".progress-percent");//text show percentage
 
-  if (!fill || !label) return;
+    if (!fill || !label) return;
 
-  if (initial) fill.style.transition = "none";
+    if (initial) fill.style.transition = "none";
 
-  fill.style.width = percent + "%";
-  label.textContent = percent + "%";
+    fill.style.width = percent + "%";
+    label.textContent = percent + "%";
 
-  if (initial) {
-    requestAnimationFrame(() => {
-      fill.style.transition = "width 0.3s ease";
-    });
+    if (initial) {
+      requestAnimationFrame(() => {
+        fill.style.transition = "width 0.3s ease";
+      });
+    }
   }
-}
 
 
 
 
   /* status change */
 
- document.addEventListener("click", e => {
-  const statusItem = e.target.closest(".dropdown li");
-  if (!statusItem) return;
+  document.addEventListener("click", e => {
+    const statusItem = e.target.closest(".dropdown li");
+    if (!statusItem) return;
 
-  const row = statusItem.closest(".task-row");
-  if (!row) return;
+    const row = statusItem.closest(".task-row");
+    if (!row) return;
 
-  
-  const realIndex = Number(row.dataset.index);
 
-  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
-  if (!stored[realIndex]) return;
+    const realIndex = Number(row.dataset.index);
 
-  const text = statusItem.textContent.toLowerCase().trim();
-   if (text.includes("complete")) {
-    stored[realIndex].status = "complete";
-  } else if (text.includes("progress")) {
-    stored[realIndex].status = "progress";
-  } else if (text.includes("pending")) {
-    stored[realIndex].status = "pending";
-  }
+    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+    if (!stored[realIndex]) return;
 
-  localStorage.setItem("tasks", JSON.stringify(stored));
+    const text = statusItem.textContent.toLowerCase().trim();
+    if (text.includes("complete")) {
+      stored[realIndex].status = "complete";
+    } else if (text.includes("progress")) {
+      stored[realIndex].status = "progress";
+    } else if (text.includes("pending")) {
+      stored[realIndex].status = "pending";
+    }
 
-  renderDynamicToday(getTodayTasks(stored));
-  renderUpcoming();
-  updateProgressBar(true);
-  updateTodayTaskCount();
-});
+    localStorage.setItem("tasks", JSON.stringify(stored));
+
+    renderDynamicToday(getTodayTasks(stored));
+    renderUpcoming();
+    updateProgressBar(true);
+    updateTodayTaskCount();
+  });
 
 
   /*filter tasks by status*/
@@ -303,136 +303,136 @@ function updateProgressBar(initial = false) {
   }
 
   // MODAL
-const taskModal = document.getElementById("taskModal");
-const closeModal = document.getElementById("closeModal");
-const cancelModal = document.getElementById("cancelModal");
-const addTaskBtn = document.querySelector(".add-task");
-const newListBtn = document.querySelector(".new-list");
-let editIndex = null; // track edit mode
+  const taskModal = document.getElementById("taskModal");
+  const closeModal = document.getElementById("closeModal");
+  const cancelModal = document.getElementById("cancelModal");
+  const addTaskBtn = document.querySelector(".add-task");
+  const newListBtn = document.querySelector(".new-list");
+  let editIndex = null; // track edit mode
 
-function openModal() {
-  taskModal.classList.add("active");
-}
+  function openModal() {
+    taskModal.classList.add("active");
+  }
 
-function closeTaskModal() {
-  taskModal.classList.remove("active");
-  taskForm.reset();
-  editIndex = null;
-}
-
-
+  function closeTaskModal() {
+    taskModal.classList.remove("active");
+    taskForm.reset();
+    editIndex = null;
+  }
 
 
-// Open modal
-addTaskBtn?.addEventListener("click", openModal);
-newListBtn?.addEventListener("click", openModal);
 
-// Close modal
-closeModal?.addEventListener("click", closeTaskModal);
-cancelModal?.addEventListener("click", closeTaskModal);
 
-// Close on outside click
-taskModal?.addEventListener("click", e => {
-  if (e.target === taskModal) closeTaskModal();
-});
+  // Open modal
+  addTaskBtn?.addEventListener("click", openModal);
+  newListBtn?.addEventListener("click", openModal);
 
-// CHECKBOX update instead of click
-document.addEventListener("change", e => {
-  const checkbox = e.target;
+  // Close modal
+  closeModal?.addEventListener("click", closeTaskModal);
+  cancelModal?.addEventListener("click", closeTaskModal);
 
-  if (!checkbox.matches('.task-row input[type="checkbox"]')) return;
-
-  const row = checkbox.closest(".task-row");
-  if (!row) return;
-
-  const index = Number(row.dataset.index);
-
-  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
-  if (!stored[index]) return;
-
-  // Update status based on checkbox
-  stored[index].status = checkbox.checked ? "complete" : "pending";
-
-  localStorage.setItem("tasks", JSON.stringify(stored));
-
-  // Update UI
-  updateProgressBar();
-  updateTodayTaskCount();
-});
-
-// EDIT TASK (OPEN MODAL WITH DATA)
-document.addEventListener("click", e => {
-  const editBtn = e.target.closest(".edit");
-  if (!editBtn) return;
-
-  e.preventDefault(); //  important if inside <a>
-
-  const row = editBtn.closest(".task-row") || editBtn.closest(".up-item");
-  if (!row) return;
-
-  const index = Number(row.dataset.index);
-  if (Number.isNaN(index)) return;
-
-  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
-  const task = stored[index];
-  if (!task) return;
-
-  const taskForm = document.querySelector(".task-form");
-  if (!taskForm) return;
-
-  editIndex = index;
-
-  // Fill form
-  taskForm.querySelector('input[type="text"]').value = task.title || "";
-  taskForm.querySelector('input[type="date"]').value = task.date || "";
-  taskForm.querySelector('input[type="time"]').value = task.time || "";
-  taskForm.querySelector("select").value = task.project || "";
-
-  // Priority
-  selectedPriority = task.priority || "Med";
-  document.querySelectorAll(".priority button").forEach(btn => {
-    btn.classList.toggle(
-      "active",
-      btn.textContent.trim() === selectedPriority
-    );
+  // Close on outside click
+  taskModal?.addEventListener("click", e => {
+    if (e.target === taskModal) closeTaskModal();
   });
 
-  
-  document.getElementById("modal-title").textContent = "Edit Task";
-  document.getElementById("modal-subtitle").textContent =
-    "Update the details below.";
-  document.getElementById("submit-btn").innerHTML =
-    '<i class="fa-solid fa-pen"></i> Update Task';
+  // CHECKBOX update instead of click
+  document.addEventListener("change", e => {
+    const checkbox = e.target;
 
-  openModal();
-});
+    if (!checkbox.matches('.task-row input[type="checkbox"]')) return;
+
+    const row = checkbox.closest(".task-row");
+    if (!row) return;
+
+    const index = Number(row.dataset.index);
+
+    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+    if (!stored[index]) return;
+
+    // Update status based on checkbox
+    stored[index].status = checkbox.checked ? "complete" : "pending";
+
+    localStorage.setItem("tasks", JSON.stringify(stored));
+
+    // Update UI
+    updateProgressBar();
+    updateTodayTaskCount();
+  });
+
+  // EDIT TASK (OPEN MODAL WITH DATA)
+  document.addEventListener("click", e => {
+    const editBtn = e.target.closest(".edit");
+    if (!editBtn) return;
+
+    e.preventDefault(); //  important if inside <a>
+
+    const row = editBtn.closest(".task-row") || editBtn.closest(".up-item");
+    if (!row) return;
+
+    const index = Number(row.dataset.index);
+    if (Number.isNaN(index)) return;
+
+    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+    const task = stored[index];
+    if (!task) return;
+
+    const taskForm = document.querySelector(".task-form");
+    if (!taskForm) return;
+
+    editIndex = index;
+
+    // Fill form
+    taskForm.querySelector('input[type="text"]').value = task.title || "";
+    taskForm.querySelector('input[type="date"]').value = task.date || "";
+    taskForm.querySelector('input[type="time"]').value = task.time || "";
+    taskForm.querySelector("select").value = task.project || "";
+
+    // Priority
+    selectedPriority = task.priority || "Med";
+    document.querySelectorAll(".priority button").forEach(btn => {
+      btn.classList.toggle(
+        "active",
+        btn.textContent.trim() === selectedPriority
+      );
+    });
+
+
+    document.getElementById("modal-title").textContent = "Edit Task";
+    document.getElementById("modal-subtitle").textContent =
+      "Update the details below.";
+    document.getElementById("submit-btn").innerHTML =
+      '<i class="fa-solid fa-pen"></i> Update Task';
+
+    openModal();
+  });
 
 
 
-// DELETE TASK
-document.addEventListener("click", e => {
-  const deleteBtn = e.target.closest(".delete");
-  if (!deleteBtn) return;
+  // DELETE TASK
+  document.addEventListener("click", e => {
+    const deleteBtn = e.target.closest(".delete");
+    if (!deleteBtn) return;
 
-  const row =
-  deleteBtn.closest(".task-row") ||
-  deleteBtn.closest(".up-item");
+    const row =
+      deleteBtn.closest(".task-row") ||
+      deleteBtn.closest(".up-item");
 
-  const index = Number(row.dataset.index);
+    const index = Number(row.dataset.index);
 
-  const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
 
-  if (!stored[index]) return;
+    if (!stored[index]) return;
 
-  if (!confirm("Delete this task?")) return;
+    if (!confirm("Delete this task?")) return;
 
-  stored.splice(index, 1);
-  localStorage.setItem("tasks", JSON.stringify(stored));
+    stored.splice(index, 1);
+    localStorage.setItem("tasks", JSON.stringify(stored));
 
-  renderDynamicToday(getTodayTasks(stored));
-  renderUpcoming();
-  updateProgressBar();
-});
+    renderDynamicToday(getTodayTasks(stored));
+    renderUpcoming();
+    updateProgressBar();
+  });
 
 
 
@@ -440,37 +440,45 @@ document.addEventListener("click", e => {
 
   function normalizeDateLocal(dateStr) {
     const [year, month, day] = dateStr.split("-").map(Number);
-    return new Date(year, month - 1, day);
+    const d = new Date(year, month - 1, day);
+    d.setHours(0, 0, 0, 0); // 🔴 normalize time
+    return d;
   }
 
   function isTomorrowLocal(dateStr) {
     const d = normalizeDateLocal(dateStr);
 
-    const t = new Date();
-    t.setDate(t.getDate() + 1);
-    t.setHours(0, 0, 0, 0);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
 
-    return d.getTime() === t.getTime();
+    return d.getTime() === tomorrow.getTime();
   }
 
   function isThisWeekLocal(dateStr) {
-    if (isTomorrowLocal(dateStr)) return false;
-
     const d = normalizeDateLocal(dateStr);
-    const now = new Date();
 
-    const start = new Date(now);
-    start.setDate(now.getDate() - now.getDay());
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // ❌ exclude today and tomorrow
+    if (d <= today || isTomorrowLocal(dateStr)) return false;
+
+    // Week start = Monday
+    const start = new Date(today);
+    const day = start.getDay() || 7; // Sunday = 7
+    start.setDate(start.getDate() - day + 1);
     start.setHours(0, 0, 0, 0);
 
     const end = new Date(start);
     end.setDate(start.getDate() + 7);
+    end.setHours(0, 0, 0, 0);
 
     return d >= start && d < end;
   }
 
   function getDayName(dateStr) {
-    const d = new Date(dateStr);
+    const d = normalizeDateLocal(dateStr);
     return d.toLocaleDateString("en-US", { weekday: "long" });
   }
 
@@ -495,13 +503,13 @@ document.addEventListener("click", e => {
       return;
     }
 
-   const tomorrowTasks = stored
-  .map((t, i) => ({ ...t, _index: i }))
-  .filter(t => isTomorrowLocal(t.date));
+    const tomorrowTasks = stored
+      .map((t, i) => ({ ...t, _index: i }))
+      .filter(t => isTomorrowLocal(t.date));
 
-const weekTasks = stored
-  .map((t, i) => ({ ...t, _index: i }))
-  .filter(t => !isTomorrowLocal(t.date) && isThisWeekLocal(t.date));
+    const weekTasks = stored
+      .map((t, i) => ({ ...t, _index: i }))
+      .filter(t => !isTomorrowLocal(t.date) && isThisWeekLocal(t.date));
 
 
     if (tomorrowTasks.length) {
@@ -595,63 +603,106 @@ const weekTasks = stored
   });
 
   /*CREATE TASK*/
-  
 
- const taskForm = document.querySelector(".task-form");
 
-if (taskForm && !taskForm.dataset.bound) {
-  taskForm.dataset.bound = "true";
+  const taskForm = document.querySelector(".task-form");
 
-  taskForm.addEventListener("submit", e => {
-    e.preventDefault();
+  if (taskForm && !taskForm.dataset.bound) {
+    taskForm.dataset.bound = "true";
 
-    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
+    taskForm.addEventListener("submit", e => {
+      e.preventDefault();
 
-    const newTask = {
-      title: taskForm.querySelector('input[type="text"]').value,
-      date: taskForm.querySelector('input[type="date"]').value,
-      time: taskForm.querySelector('input[type="time"]').value,
-      project: taskForm.querySelector("select").value,
-      priority: selectedPriority,
-      status: editIndex !== null
-        ? stored[editIndex].status   // keep old status
-        : "pending"
-    };
+      const stored = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    if (editIndex !== null) {
-      // UPDATE existing task
-      stored[editIndex] = newTask;
+      const newTask = {
+        title: taskForm.querySelector('input[type="text"]').value,
+        date: taskForm.querySelector('input[type="date"]').value,
+        time: taskForm.querySelector('input[type="time"]').value,
+        project: taskForm.querySelector("select").value,
+        priority: selectedPriority,
+        status: editIndex !== null
+          ? stored[editIndex].status   // keep old status
+          : "pending"
+      };
+
+      if (editIndex !== null) {
+        // UPDATE existing task
+        stored[editIndex] = newTask;
+      } else {
+        // CREATE new task
+        stored.push(newTask);
+      }
+
+      localStorage.setItem("tasks", JSON.stringify(stored));
+
+      editIndex = null;
+      closeTaskModal(); // make sure this exists
+
+      alert("Task saved");
+
+      setTimeout(() => {
+        window.location.href = "Home.html";
+      }, 1000);
+
+      taskForm.reset();
+    });
+  }
+
+
+
+
+
+
+  /*Initial render*/
+  function loadPageContext() {
+    const params = new URLSearchParams(window.location.search);
+    const statusParam = params.get("status");
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    // Update active nav state
+    document.querySelectorAll(".menu a").forEach(a => a.classList.remove("active"));
+    if (statusParam === "complete") {
+      document.getElementById("nav-complete")?.classList.add("active");
+    } else if (statusParam === "progress") {
+      document.getElementById("nav-progress")?.classList.add("active");
+    } else if (statusParam === "pending") {
+      document.getElementById("nav-pending")?.classList.add("active");
     } else {
-      // CREATE new task
-      stored.push(newTask);
+      document.getElementById("nav-all")?.classList.add("active");
     }
 
-    localStorage.setItem("tasks", JSON.stringify(stored));
+    if (statusParam) {
+      // We are on a status page (all tasks of that status)
+      const pageTitle = document.getElementById("pageTitle");
+      if (pageTitle) {
+        const titles = {
+          "complete": "Completed Tasks",
+          "progress": "In Progress",
+          "pending": "Pending Tasks"
+        };
+        pageTitle.textContent = titles[statusParam] || "Tasks";
+      }
 
-    editIndex = null;
-    closeTaskModal(); // make sure this exists
+      // Filter ALL tasks by status (not just today)
+      const filtered = tasks.filter(t => t.status === statusParam);
+      renderDynamicToday(filtered); // reusing this function as it renders the list
 
-    alert("Task saved");
+      // Hide upcoming section on status pages as we show a simple list
+      const upcoming = document.querySelector(".upcoming");
+      if (upcoming) upcoming.style.display = "none";
 
-    setTimeout(() => {
-      window.location.href = "Home.html";
-    }, 1000);
+    } else {
+      // Dashboard / Home (Today's tasks)
+      renderDynamicToday(getTodayTasks(tasks));
+      renderUpcoming();
+    }
 
-    taskForm.reset();
-  });
-}
+    updateProgressBar(true);
+    updateTodayTaskCount();
+  }
 
-
-
-
-  
-
-  /*Initial render*/
-  /*Initial render*/
-renderDynamicToday(getTodayTasks(tasks));
-renderUpcoming();
-updateProgressBar(true);
-updateTodayTaskCount();
+  loadPageContext();
 
 
 });
