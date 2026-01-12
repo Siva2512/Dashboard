@@ -438,6 +438,11 @@ body {
 /* mobile */
 @media (max-width: 480px) {
 
+  .task-modal-content {
+    width: 94%;
+    padding: 16px;
+  }
+
   .top-bar {
     padding: 10px 16px;
     display: flex;
