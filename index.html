@@ -135,8 +135,8 @@
       <!-- MODAL HEADER -->
       <div class="create-head">
         <div class="head-text">
-          <h2 id="modal-title">Create New Task</h2>
-          <p id="modal-subtitle">Fill in the details below to add a new item.</p>
+          <h2 id="modal-title"></h2>
+          <p id="modal-subtitle"></p>
         </div>
         <i class="fa-solid fa-xmark close-modal" id="closeModal"></i>
       </div>
@@ -171,6 +171,7 @@
           <div class="form-group">
             <label>Project</label>
             <select id="project">
+               <option value="project">Select Project</option>
               <option>Work</option>
               <option>Personal</option>
               <option>Shopping</option>
@@ -213,9 +214,16 @@
 
   <div class="overlay"></div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+      <i class="fa-solid fa-check-circle"></i>
+      <span id="toast-msg">Task created successfully!</span>
+    </div>
+
+
   <!-- JS -->
   <script src="todo.js"></script> <!-- dashboard, modal, render -->
-  <script src="task.js"></script> <!-- form logic -->
+  <script src="task.js"></script>
 
 </body>
 

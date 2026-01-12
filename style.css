@@ -65,6 +65,8 @@ body {
 }
 
 /* PROJECTS */
+
+/* Project select */
 .projects h4 {
   color: #a6b3c4;
 }
@@ -147,7 +149,7 @@ body {
   align-items: center;
   border-bottom: 1px solid rgb(237, 237, 237);
   gap: 10px;
-  width: 60%;
+  width: 100%;
 }
 
 
@@ -335,6 +337,45 @@ body {
   display: flex;
   gap: 10px;
   position: relative;
+}
+.update-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+    min-width: 85px;
+    text-align: center;
+}
+
+.update-status.complete {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.update-status.progress {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #f59e0b;
+}
+
+.update-status.pending {
+    background-color: #fee;
+    color: #b91c1c;
+    border: 1px solid #ef4444;
+}
+.change div{
+   height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid transparent;
+    padding: 10px;
+    border-radius: 3px;
+    position: relative;
 }
 
 /* ICONS */
@@ -654,9 +695,12 @@ body {
   height: 100%;
   background: rgba(0,0,0,0.45);
   margin: auto;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  z-index:999;
+  z-index:3000;
+  overflow-y: scroll;
+
+  
 }
 
 /* SHOW MODAL */
@@ -667,6 +711,7 @@ body {
 /* MODAL BOX */
 .task-modal-content {
   width:90%;
+  max-height: calc(100vh-100px);
   max-width: 700px;
   margin: 0 auto;
   position: relative;
@@ -674,7 +719,8 @@ body {
   border-radius: 14px;
   padding: 35px 40px 40px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  overflow-y: auto;
+  overflow-y: scroll;
+    margin: 20px 0;
 }
 
 /* CLOSE ICON */
@@ -683,7 +729,35 @@ body {
   font-size: 18px;
 }
 
+/* Toast Styles */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #0074eb;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: bold;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    transition: all 0.5s ease;
+    z-index: 9999;
+}
 
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast i {
+    font-size: 18px;
+}
 
 
 /*responsive*/
@@ -708,7 +782,7 @@ body {
   }
 
   .main {
-    width: calc(100% - 220px);
+    width: 100%;
   }
 
   .welcome {
@@ -755,7 +829,7 @@ body {
   background: rgba(0,0,0,0.4);
   opacity: 0;
   visibility: hidden;
-  pointer-events: none;   /* 🔴 IMPORTANT */
+  pointer-events: none; 
   transition: opacity 0.3s ease;
   z-index: 900;
 }
@@ -763,13 +837,13 @@ body {
 .overlay.show {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto;   /* 🔴 ALLOWS CLICK */
+  pointer-events: auto; 
 }
 
 
   /* main full width */
   .main {
-    width: 100%;
+    width: 80%;
   }
 
   .welcome {
@@ -794,26 +868,25 @@ body {
 
 /* MOBILE */
 @media (max-width: 480px) {
-
   .top-bar {
     padding: 10px 16px;
+    display: flex;
+    align-items: center;
     gap: 10px;
   }
-  .change{
-    display: block;
-  }
 
- 
+
   .search {
     width: 100%;
     flex: 1;
   }
 
-  /* FIX ICONS */
   .icons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     gap: 10px;
     font-size: 16px;
-    padding: 0;
     flex-shrink: 0;
   }
 
@@ -821,19 +894,92 @@ body {
     padding: 16px;
   }
 
+
+  .bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+  }
+
+  /* add task button */
   .add-task {
-    padding: 8px 16px;
+    padding: 8px 14px;
     font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /*progress row -- */
+  .progress-row {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .progress-bar {
     width: 100%;
   }
 
-  .task-modal-content {
-    width: 92%;
-    padding: 16px;
+  /* -- TASK ACTION ICONS -- */
+  .change {
+    display: flex;
+    gap: 8px;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+   /* TASK ROW FIX */
+   .task-row {
+    display: flex;
+    flex-wrap: wrap;        
+    align-items: flex-start;
+  }
+
+  /* LEFT CONTENT CAN SHRINK */
+  .task-left {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  .update-status,
+  .change {
+    margin-top: 6px;
+  }
+
+  /* ICON BUTTONS */
+  .change .edit,
+  .change .update,
+  .change .delete {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+   .update-status {
+    order: 2;            
+    font-size: 12px;
+    padding: 6px 12px;
+    white-space: nowrap;
+  }
+
+  /* Action icons */
+  .change {
+    order: 3;               
+    margin-left: auto;        
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .change .edit,
+  .change .update,
+  .change .delete {
+    width: 28px;
+    height: 28px;
   }
 }
+
+
+
 
 

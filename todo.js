@@ -140,6 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
 
         <div class="change">
+        <div class="update-status ${t.status}">${t.status}</div>
+        
           <div class="edit">
             <i class="fa-solid fa-pen-to-square"></i>
           </div>
@@ -245,6 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderUpcoming();
     updateProgressBar(true);
     updateTodayTaskCount();
+    showToast("Task status updated successfully!");
   });
 
 
@@ -308,16 +311,45 @@ document.addEventListener("DOMContentLoaded", () => {
   const cancelModal = document.getElementById("cancelModal");
   const addTaskBtn = document.querySelector(".add-task");
   const newListBtn = document.querySelector(".new-list");
+  const toast = document.getElementById("toast");
+  const toastMsg = document.getElementById("toast-msg");
   let editIndex = null; // track edit mode
 
   function openModal() {
     taskModal.classList.add("active");
   }
+  function openAddTaskModal() {
+  // HARD reset edit mode
+  editIndex = null;
+
+  const form = document.querySelector(".task-form");
+  form.reset();
+
+  selectedPriority = "Med";
+  document.querySelectorAll(".priority button")
+    .forEach(btn => btn.classList.remove("active"));
+
+  // Header based ONLY on editIndex
+  document.getElementById("modal-title").textContent =
+    editIndex !== null ? "Edit Task" : "Add Task";
+
+  document.getElementById("modal-subtitle").textContent =
+    editIndex !== null
+      ? "Update the details below."
+      : "Fill in the details below.";
+
+  document.getElementById("submit-btn").innerHTML =
+    editIndex !== null
+      ? '<i class="fa-solid fa-pen"></i> Update Task'
+      : '<i class="fa-solid fa-plus"></i> Add Task';
+
+  openModal();
+}
 
   function closeTaskModal() {
     taskModal.classList.remove("active");
     taskForm.reset();
-    editIndex = null;
+    // editIndex = null;
   }
 
 
@@ -326,6 +358,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Open modal
   addTaskBtn?.addEventListener("click", openModal);
   newListBtn?.addEventListener("click", openModal);
+
+  // Open modal
+  addTaskBtn?.addEventListener("click", openAddTaskModal);
+  newListBtn?.addEventListener("click", openAddTaskModal);
 
   // Close modal
   closeModal?.addEventListener("click", closeTaskModal);
@@ -361,51 +397,74 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // EDIT TASK (OPEN MODAL WITH DATA)
-  document.addEventListener("click", e => {
-    const editBtn = e.target.closest(".edit");
-    if (!editBtn) return;
+document.addEventListener("click", e => {
+  const editBtn = e.target.closest(".edit");
+  if (!editBtn) return;
 
-    e.preventDefault(); //  important if inside <a>
+  e.preventDefault();
 
-    const row = editBtn.closest(".task-row") || editBtn.closest(".up-item");
-    if (!row) return;
+  const row = editBtn.closest(".task-row") || editBtn.closest(".up-item");
+  const index = row?.dataset?.index;
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const task = index !== undefined ? tasks[index] : null;
 
-    const index = Number(row.dataset.index);
-    if (Number.isNaN(index)) return;
+  const form = document.querySelector(".task-form");
 
-    const stored = JSON.parse(localStorage.getItem("tasks")) || [];
-    const task = stored[index];
-    if (!task) return;
+  // mode decide using ?
+  editIndex = task ? Number(index) : null;
 
-    const taskForm = document.querySelector(".task-form");
-    if (!taskForm) return;
+  // fill or reset form
+  form.reset?.();
+  selectedPriority = task?.priority || "Med";
 
-    editIndex = index;
+  form.querySelector('input[type="text"]').value = task?.title || "";
+  form.querySelector("#desc").value = task?.desc || "";
+  form.querySelector('input[type="date"]').value = task?.date || "";
+  form.querySelector('input[type="time"]').value = task?.time || "";
+  form.querySelector("select").value = task?.project || "";
 
-    // Fill form
-    taskForm.querySelector('input[type="text"]').value = task.title || "";
-    taskForm.querySelector('input[type="date"]').value = task.date || "";
-    taskForm.querySelector('input[type="time"]').value = task.time || "";
-    taskForm.querySelector("select").value = task.project || "";
+  document.querySelectorAll(".priority button").forEach(btn =>
+    btn.classList.toggle("active", btn.textContent.trim() === selectedPriority)
+  );
 
-    // Priority
-    selectedPriority = task.priority || "Med";
-    document.querySelectorAll(".priority button").forEach(btn => {
-      btn.classList.toggle(
-        "active",
-        btn.textContent.trim() === selectedPriority
-      );
-    });
+  // modal text (ternary only)
+  document.getElementById("modal-title").textContent =
+    task ? "Edit Task" : "Add Task";
 
+  document.getElementById("modal-subtitle").textContent =
+    task ? "Update the details below." : "Fill in the details below.";
 
-    document.getElementById("modal-title").textContent = "Edit Task";
-    document.getElementById("modal-subtitle").textContent =
-      "Update the details below.";
-    document.getElementById("submit-btn").innerHTML =
-      '<i class="fa-solid fa-pen"></i> Update Task';
+  document.getElementById("submit-btn").innerHTML = task
+    ? '<i class="fa-solid fa-pen"></i> Update Task'
+    : '<i class="fa-solid fa-plus"></i> Add Task';
 
-    openModal();
-  });
+  openModal();
+});
+
+  // show toast
+
+  function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  const toastMsg = document.getElementById("toast-msg");
+  const icon = toast.querySelector("i");
+
+  toastMsg.textContent = message;
+
+  if (type === "success") {
+    toast.style.backgroundColor = "#0074eb";
+    icon.className = "fa-solid fa-check-circle";
+  } else if (type === "error") {
+    toast.style.backgroundColor = "#ef4444";
+    icon.className = "fa-solid fa-exclamation-circle";
+  }
+
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2000);
+}
+
 
 
 
@@ -432,6 +491,8 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDynamicToday(getTodayTasks(stored));
     renderUpcoming();
     updateProgressBar();
+    showToast('Task deleted successfully!');
+
   });
 
 
@@ -441,7 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function normalizeDateLocal(dateStr) {
     const [year, month, day] = dateStr.split("-").map(Number);
     const d = new Date(year, month - 1, day);
-    d.setHours(0, 0, 0, 0); // 🔴 normalize time
+    d.setHours(0, 0, 0, 0);
     return d;
   }
 
@@ -461,7 +522,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // ❌ exclude today and tomorrow
     if (d <= today || isTomorrowLocal(dateStr)) return false;
 
     // Week start = Monday
@@ -617,6 +677,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const newTask = {
         title: taskForm.querySelector('input[type="text"]').value,
+        desc: taskForm.querySelector("#desc").value,
         date: taskForm.querySelector('input[type="date"]').value,
         time: taskForm.querySelector('input[type="time"]').value,
         project: taskForm.querySelector("select").value,
@@ -633,26 +694,24 @@ document.addEventListener("DOMContentLoaded", () => {
         // CREATE new task
         stored.push(newTask);
       }
-
       localStorage.setItem("tasks", JSON.stringify(stored));
+console.log("editIndexbefore", editIndex);
 
-      editIndex = null;
-      closeTaskModal(); // make sure this exists
+const updatedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-      alert("Task saved");
+renderDynamicToday(getTodayTasks(updatedTasks));
+renderUpcoming();
+updateProgressBar(true);
+updateTodayTaskCount();
 
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 1000);
+closeTaskModal();
+showToast(editIndex ? "Task updated successfully!" : "Task created successfully!");
 
-      taskForm.reset();
+taskForm.reset();
+editIndex = null;
+
     });
   }
-
-
-
-
-
 
   /*Initial render*/
   function loadPageContext() {
@@ -716,6 +775,7 @@ if (addTaskBtn && modal) {
     modal.classList.add("show");
   });
 }
+
 document.getElementById("closeModal")?.addEventListener("click", () => {
   modal.classList.remove("show");
 });
