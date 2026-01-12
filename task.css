@@ -534,6 +534,9 @@ body {
   .form-row.date-time-row .form-group {
     width: 100% !important;  
   }
+  .form-row.date-time-row input {
+    width: 100%;
+  }
 
 
   body {
