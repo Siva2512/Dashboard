@@ -525,8 +525,10 @@ body {
     width: 100%;
   }
   .form-row.date-time-row {
+    display: flex;
     flex-direction: column;
     width: 100%;
+    gap: 12px;
   }
 
   .form-row.date-time-row .form-group {
