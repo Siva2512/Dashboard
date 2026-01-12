@@ -267,7 +267,7 @@ body {
 
 .form-row.date-time-row .form-group {
   display: flex;
-  width: 50%;
+  width: 100%;
 }
 
 /* Project & Priority */
@@ -543,4 +543,5 @@ body {
     overflow-x: hidden;
   }
 }
+
 
