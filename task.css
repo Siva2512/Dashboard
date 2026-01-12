@@ -348,9 +348,11 @@ body {
 }
 
 .cancel-btn {
-  background: none;
-  border: none;
-  color: #64748b;
+  background: white;
+  border: 1px solid #161617;
+  color: #202935;
+  border-radius: 8px;
+  padding: 8px 15px;
   cursor: pointer;
 }
 
@@ -521,6 +523,14 @@ body {
 
   .footer button {
     width: 100%;
+  }
+  .form-row.date-time-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .form-row.date-time-row .form-group {
+    width: 100% !important;  
   }
 
 

@@ -829,7 +829,7 @@ body {
   background: rgba(0,0,0,0.4);
   opacity: 0;
   visibility: hidden;
-  pointer-events: none; 
+  pointer-events: none;   
   transition: opacity 0.3s ease;
   z-index: 900;
 }
@@ -937,7 +937,6 @@ body {
     align-items: flex-start;
   }
 
-  /* LEFT CONTENT CAN SHRINK */
   .task-left {
     flex: 1 1 100%;
     min-width: 0;
@@ -954,21 +953,24 @@ body {
     width: 28px;
     height: 28px;
     flex-shrink: 0;
+    order: 1;
   }
    .update-status {
     order: 2;            
     font-size: 12px;
-    padding: 6px 12px;
-    white-space: nowrap;
+    margin-top:auto;
+    margin-left: 0;
   }
 
   /* Action icons */
-  .change {
-    order: 3;               
-    margin-left: auto;        
+  .change {                    
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+   .change .update-status {
+    order: 0;
+    margin-right: auto;  
   }
 
   .change .edit,
@@ -976,6 +978,7 @@ body {
   .change .delete {
     width: 28px;
     height: 28px;
+    order: 1;
   }
 }
 
